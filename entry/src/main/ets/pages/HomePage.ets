@@ -1,5 +1,5 @@
 import { HcClockIn, HcSearchBox } from '../commons/components'
-import { HomeCategory } from '../views/HomeCategory'
+import { HomeCategory } from '../views/home/HomeCategory'
 
 @Component
 export struct HomePage {

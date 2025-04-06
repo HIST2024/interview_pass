@@ -1,22 +1,26 @@
-import { QuestionListComp } from '../commons/components'
-import { QuestionItemComp } from '../commons/components/QuestionItemComp'
-import { QuestionType } from '../models'
+import { QuestionListComp } from '../../commons/components'
+import { http } from '../../commons/utils'
+import { QuestionType } from '../../models'
 
 @Component
 export struct HomeCategory {
-  @State questionTypeList: QuestionType[] = mockData
+  @State questionTypeList: QuestionType[] = []
   @State activeIndex: number = 0
+
+  async getQuestionTypeList() {
+    const res = await http.request<QuestionType[]>({ url: 'question/type' })
+    this.questionTypeList = res
+  }
+
+  aboutToAppear(): void {
+    this.getQuestionTypeList()
+  }
 
   build() {
     Tabs({ index: this.activeIndex }) {
       ForEach(this.questionTypeList, (item: QuestionType, i) => {
         TabContent() {
-          // TODO 试题列表
-          List() {
-            ForEach(new Array(10).fill(0), () => {
-              QuestionListComp()
-            })
-          }
+          QuestionListComp({ typeId: item.id })
         }
         .tabBar(this.TabBarBuilder(item, i))
       })
@@ -56,14 +60,3 @@ export struct HomeCategory {
     .padding({ left: 16, right: this.questionTypeList.length === i + 1 ? 16 : 0 })
   }
 }
-
-const mockData: QuestionType[] = [
-  { id: 1, name: 'ArkTS', displayNewestFlag: 0 },
-  { id: 2, name: 'ArkUI', displayNewestFlag: 1 },
-  { id: 3, name: 'Hap', displayNewestFlag: 1 },
-  { id: 4, name: 'Hsp', displayNewestFlag: 0 },
-  { id: 5, name: 'Har', displayNewestFlag: 0 },
-  { id: 6, name: 'Ability', displayNewestFlag: 0 },
-  { id: 7, name: 'Stage', displayNewestFlag: 0 },
-  { id: 8, name: 'Kit', displayNewestFlag: 0 }
-]
